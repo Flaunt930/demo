@@ -6,6 +6,7 @@
       <!--@changeMethod="changeMethod">-->
     <!--</select-ab>-->
     <input-ab
+      ref="inputAB"
       :statesA="statesC"
       :statesB="statesD"
       @changeMethod="changeMethod">
@@ -14,6 +15,7 @@
     <el-row>
       <el-button plain size="mini" @click="dialogDelete = true">删除</el-button>
       <el-button plain size="mini" @click="dialogVisible = true">筛选</el-button>
+      <el-button plain size="mini" @click="resetClick">重置</el-button>
     </el-row>
     <el-table
       ref="multipleTable"
@@ -187,19 +189,61 @@ export default {
       checkedCities: ['date', 'name', 'address', 'province'],
       defaultSelectValue: ['date', 'name', 'address', 'province'],
       allSelectValue: ['date', 'name', 'address', 'province', 'city', 'category'],
-      isIndeterminate: true
+      isIndeterminate: true,
+      formInfo: {
+        id: 'B8',
+        prop: 'desc',
+        label: '描述',
+        show: false,
+        size: '50'
+      }
     }
   },
   mounted () {
     this.formatter()
+    this.pamarsFormat()
   },
   methods: {
+    pamarsFormat () {
+      let isTwo = ['prop', 'label']
+      let isThree = ['size', 'show']
+      let aaa = {
+        a: {id: ''},
+        b: [],
+        c: []
+      }
+      for (let key in this.formInfo) {
+        if (key === 'id') {
+          aaa.a.id = this.formInfo.id
+        } else if (isTwo.some((item) => { return item === key })) {
+          let two = {key: key, value: this.formInfo[key]}
+          aaa.b.push(two)
+        } else if (isThree.some((item) => { return item === key })) {
+          let three = {key: key, value: this.formInfo[key]}
+          aaa.c.push(three)
+        }
+      }
+      console.log(aaa)
+      let pamars = {
+        first: {id: 'B8'},
+        two: [
+          {key: 'prop', value: 'desc'},
+          {key: 'label', value: '描述'}
+        ],
+        three: [
+          {key: 'size', value: '50'},
+          {key: 'show', value: 'false'}
+        ]
+      }
+      console.log(pamars)
+    },
     formatter () {
       let data = [
         '三全鲜食（北新泾店）', 'Hot honey 首尔炸鸡（仙霞路）', 'Hot honey 首尔炸鸡（仙霞路）',
         '新旺角茶餐厅', '泷千家(天山西路店)', '贡茶', '胖仙女纸杯蛋糕（上海凌空店）', '豪大大香鸡排超级奶爸',
         '茶芝兰（奶茶，手抓饼）', '阿姨奶茶/豪大大'
       ]
+      data = data || []
       let list = data.map(item => {
         return { value: item }
       })
@@ -237,6 +281,9 @@ export default {
     },
     deleteClick () {
       this.dialogDelete = false
+    },
+    resetClick () {
+      this.$refs.inputAB.clear()
     }
   }
 }
