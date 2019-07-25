@@ -16,6 +16,7 @@
       <el-button plain size="mini" @click="dialogDelete = true">删除</el-button>
       <el-button plain size="mini" @click="dialogVisible = true">筛选</el-button>
       <el-button plain size="mini" @click="resetClick">重置</el-button>
+      <el-button plain size="mini" @click="selectValueClick">取值</el-button>
     </el-row>
     <el-table
       ref="multipleTable"
@@ -196,7 +197,8 @@ export default {
         label: '描述',
         show: false,
         size: '50'
-      }
+      },
+      index: 0
     }
   },
   mounted () {
@@ -223,6 +225,7 @@ export default {
           aaa.c.push(three)
         }
       }
+      aaa = JSON.parse(JSON.stringify(aaa))
       console.log(aaa)
       let pamars = {
         first: {id: 'B8'},
@@ -284,6 +287,13 @@ export default {
     },
     resetClick () {
       this.$refs.inputAB.clear()
+    },
+    selectValueClick () {
+      let data = ['first', 'two', 'three', 'for']
+      let selectValue = data[this.index]
+      this.index++
+      if (this.index === data.length) this.index = 0
+      console.log(selectValue)
     }
   }
 }
