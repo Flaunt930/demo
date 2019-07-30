@@ -7,12 +7,16 @@
     <!--</select-ab>-->
     <input-ab
       ref="inputAB"
+      :prop="form.inputAb.value"
+      :disabled="disabledAll||!form.inputAb.edit"
       :statesA="statesC"
       :statesB="statesD"
       @changeMethod="changeMethod">
     </input-ab>
-
-    <el-row>
+    <el-input :disabled="disabledAll||!form.name.edit" v-model="form.name.value"></el-input>
+    <el-input :disabled="disabledAll||!form.size.edit" v-model="form.size.value"></el-input>
+    <el-row style="margin-top:20px">
+      <el-button plain size="mini" @click="editClick">编辑</el-button>
       <el-button plain size="mini" @click="dialogDelete = true">删除</el-button>
       <el-button plain size="mini" @click="dialogVisible = true">筛选</el-button>
       <el-button plain size="mini" @click="resetClick">重置</el-button>
@@ -21,7 +25,7 @@
     <el-table
       ref="multipleTable"
       :data="tableData"
-      style="width:100%"
+      style="width:100%;display: none"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="55" label="序号"></el-table-column>
@@ -56,7 +60,6 @@
         <el-button plain size="mini" @click="sureClick">确 定</el-button>
       </el-row>
     </el-dialog>
-
     <!--删除-->
     <el-dialog
       title="提示"
@@ -68,6 +71,25 @@
         <el-button type="primary" @click="deleteClick">确 定</el-button>
       </el-row>
     </el-dialog>
+    <el-table :data="tableList" style="width: 100%" @current-change="changeData">
+      <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column label="附件">
+        <tempate slot-scope="scope">
+          <el-upload
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-preview="handlePreview"
+            :on-success="handleSuccess"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            multiple
+            :limit="3"
+            :file-list="scope.row.fileList">
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
+        </tempate>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
@@ -116,6 +138,7 @@ export default {
         { 'value': '唦哇嘀咖', 'address': '上海市长宁区新泾镇金钟路999号2幢（B幢）第01层第1-02A单元' }
       ],
       statesD: [],
+      disabledAll: false,
       queryValue: '',
       allOption: [
         {prop: 'date', label: '日期', disabled: true, show: true},
@@ -198,14 +221,52 @@ export default {
         show: false,
         size: '50'
       },
-      index: 0
+      form: {
+        inputAb: {value: '890', edit: true},
+        name: {value: '', edit: false},
+        size: {value: '50', edit: true}
+      },
+      index: 0,
+      isEdit: false,
+      tableList: [
+        {name: '小明', fileList: []},
+        {name: '小明', fileList: []},
+        {name: '小明', fileList: []},
+        {name: '小明', fileList: []},
+        {name: '小明', fileList: []}
+      ],
+      fileList: []
     }
   },
   mounted () {
     this.formatter()
     this.pamarsFormat()
+    // 輸入框狀態
+    const id = this.$route.query.id
+    console.log(id)
+    if (id) {
+      this.disabledAll = true
+    }
   },
   methods: {
+    editClick () {
+      this.disabledAll = false
+    },
+    handleSuccess (response, file, fileList) {
+
+    },
+    handleRemove (file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview (file) {
+      console.log(file)
+    },
+    beforeRemove (file, fileList) {
+      return this.$confirm(`确定移除${file.name}？`)
+    },
+    changeData () {
+      console.log(this.tableList)
+    },
     pamarsFormat () {
       let isTwo = ['prop', 'label']
       let isThree = ['size', 'show']

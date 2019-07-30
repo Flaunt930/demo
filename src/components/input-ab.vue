@@ -3,6 +3,7 @@
     <el-autocomplete
       v-model="state4"
       clearable
+      :disabled="disabled"
       :fetch-suggestions="querySearchAsync"
       placeholder="请选择或输入内容"
       @select="handleSelect"
@@ -13,7 +14,7 @@
 <script>
 export default {
   name: 'input-ab',
-  props: ['statesA', 'statesB'],
+  props: ['prop', 'statesA', 'statesB', 'disabled'],
   data () {
     return {
       restaurants: [],
@@ -22,6 +23,9 @@ export default {
     }
   },
   mounted () {
+    if (this.prop !== '') {
+      this.value = this.prop
+    }
     this.jiekouA()
   },
   methods: {
