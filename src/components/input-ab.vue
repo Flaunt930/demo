@@ -14,7 +14,7 @@
 <script>
 export default {
   name: 'input-ab',
-  props: ['prop', 'statesA', 'statesB', 'disabled'],
+  props: ['prop', 'statesA', 'statesB', 'disabled', 'index', 'label'],
   data () {
     return {
       restaurants: [],
@@ -45,7 +45,7 @@ export default {
       this.timeout = setTimeout(() => {
         cb(results)
       }, 500)
-      this.$emit('changeMethod', this.state4)
+      // this.$emit('changeMethod', this.state4, this.index)
     },
     createStateFilter (queryString) {
       return (state) => {
@@ -56,7 +56,7 @@ export default {
       }
     },
     handleSelect (item) {
-      this.$emit('changeMethod', this.state4)
+      this.$emit('changeMethod', this.state4, this.label || this.index)
     },
     clear () {
       this.state4 = ''

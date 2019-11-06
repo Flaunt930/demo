@@ -1,41 +1,37 @@
 <template>
   <div class="demo">
-    <el-button @click="submitClick('formInfo')" size="mini" plain>提交</el-button>
-    <div class="form">
-      <div class="firstCloumn">
-        <div>星座：</div>
-        <div>想法：</div>
-        <div>优势：</div>
-      </div>
-      <div class="formCloumn">
-        <el-form :model="formInfo" ref="formInfo">
-          <div class="item" v-for="(item, index) in formInfo.formData" :key="'data'+index">
-            <div class="plusBtn">方案{{chnNumChar[index]}}
-              <el-button :disabled="formInfo.formData.length==8" class="roundness plus" @click="cloumnPlus">+
-              </el-button>
-              <el-button :disabled="formInfo.formData.length==1" class="roundness" @click="deleteClick(index)">-
-              </el-button>
-            </div>
-            <el-form-item :rules="[{ required: true, trigger: 'change' }]" prop="constellation">
-              <el-input size="mini" v-model="item.constellation"></el-input>
-            </el-form-item>
-            <el-form-item :rules="[{ required: true, trigger: 'change' }]" prop="idea">
-              <el-input size="mini" v-model="item.idea"></el-input>
-            </el-form-item>
-            <el-form-item :rules="[{ required: true, trigger: 'change' }]" prop="advantage">
-              <el-input size="mini" v-model="item.advantage"></el-input>
-            </el-form-item>
-          </div>
-        </el-form>
-      </div>
+    <div style="margin-bottom: 20px">
+      <input-ab
+        :label="'man'"
+        :prop="man"
+        :statesA="statesC"
+        :statesB="statesD"
+        @changeMethod="Method">
+      </input-ab>
+
+      <input-ab
+        :label="'wuman'"
+        :prop="wuman"
+        :statesA="statesC"
+        :statesB="statesD"
+        @changeMethod="Method">
+      </input-ab>
     </div>
     <el-table
       :data="tableData6"
       border
-      :summary-method="getSummaries"
-      show-summary
       style="width: 100%; margin-top: 20px">
-      <el-table-column prop="name" label="姓名"></el-table-column>
+      <el-table-column prop="name" label="姓名">
+        <template slot-scope="scope">
+          <input-ab
+            :index="scope.$index"
+            :prop="scope.row.name"
+            :statesA="statesC"
+            :statesB="statesD"
+            @changeMethod="changeMethod">
+          </input-ab>
+        </template>
+      </el-table-column>
       <el-table-column prop="amount1" label="数值 1（元）"></el-table-column>
       <el-table-column prop="amount2" label="占比（%）"></el-table-column>
       <el-table-column prop="amount3" label="数值 3（元）"></el-table-column>
@@ -45,78 +41,54 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        chnNumChar: ['一', '二', '三', '四', '五', '六', '七', '八'],
-        formInfo: {
-          formData: [
-            {id: 1, constellation: '', idea: '', advantage: ''}
-          ]
-        },
-        tableData6: [
-          {name: '王', amount1: '39', amount2: '4.1%', amount3: 15, amount4: '4.12%',},
-          {name: '王小', amount1: '79', amount2: '5.1%', amount3: 16, amount4: '4.11%',},
-          {name: '小虎', amount1: '59', amount2: '6.1%', amount3: 17, amount4: '14.14%',},
-          {name: '王小虎', amount1: '939', amount2: '7.1%', amount3: 18, amount4: '42.11%',}
-        ]
-      }
+import inputAb from './input-ab.vue'
+
+export default {
+  components: {
+    inputAb
+  },
+  data () {
+    return {
+      man: '',
+      wuman: '',
+      chnNumChar: ['一', '二', '三', '四', '五', '六', '七', '八'],
+      statesC: [
+        { 'value': '新麦甜四季甜品炸鸡', 'address': '嘉定区曹安公路2383弄55号' },
+        { 'value': 'Monica摩托主题咖啡店', 'address': '嘉定区江桥镇曹安公路2409号1F，2383弄62号1F' },
+        { 'value': '浮生若茶（凌空soho店）', 'address': '上海长宁区金钟路968号9号楼地下一层' },
+        { 'value': 'NONO JUICE  鲜榨果汁', 'address': '上海市长宁区天山西路119号' },
+        { 'value': 'CoCo都可(北新泾店）', 'address': '上海市长宁区仙霞西路' },
+        { 'value': '快乐柠檬（神州智慧店）', 'address': '上海市长宁区天山西路567号1层R117号店铺' },
+        { 'value': 'Merci Paul cafe', 'address': '上海市普陀区光复西路丹巴路28弄6号楼819' },
+        { 'value': '猫山王（西郊百联店）', 'address': '上海市长宁区仙霞西路88号第一层G05-F01-1-306' },
+        { 'value': '枪会山', 'address': '上海市普陀区棕榈路' },
+        { 'value': '纵食', 'address': '元丰天山花园(东门) 双流路267号' },
+        { 'value': '钱记', 'address': '上海市长宁区天山西路' },
+        { 'value': '壹杯加', 'address': '上海市长宁区通协路' },
+        { 'value': '唦哇嘀咖', 'address': '上海市长宁区新泾镇金钟路999号2幢（B幢）第01层第1-02A单元' }
+      ],
+      statesD: [],
+      tableData6: [
+        {name: '王', amount1: '39', amount2: '4.1%', amount3: 15, amount4: '4.12%'},
+        {name: '王小', amount1: '79', amount2: '5.1%', amount3: 16, amount4: '4.11%'},
+        {name: '小虎', amount1: '59', amount2: '6.1%', amount3: 17, amount4: '14.14%'},
+        {name: '王小虎', amount1: '939', amount2: '7.1%', amount3: 18, amount4: '42.11%'}
+      ]
+    }
+  },
+  methods: {
+    Method (val, label) {
+      this[label] = val
+      console.log(this.man)
+      console.log(this.wuman)
     },
-    methods: {
-      submitClick (formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            this.$message.success('提交成功')
-          } else {
-            this.$message.error('请输入信息')
-          }
-        })
-      },
-      cloumnPlus () {
-        let obj = {constellation: '', idea: '', advantage: ''}
-        this.formInfo.formData.push(obj)
-      },
-      deleteClick (index) {
-        this.formInfo.formData.splice(index, 1)
-      },
-      getSummaries (param) {
-        const {columns, data} = param
-        const sums = []
-        const percent = ['amount2', 'amount4']
-        columns.forEach((column, index) => {
-          if (index === 0) {
-            sums[index] = '合计'
-            return
-          }
-          const values = data.map(item => {
-            if (percent.includes(column.property)) {
-              return Number(item[column.property].replace(/%/g, ''))
-            } else {
-              return Number(item[column.property])
-            }
-          })
-          if (!values.every(value => isNaN(value))) {
-            sums[index] = values.reduce((prev, curr) => {
-              const value = Number(curr)
-              if (!isNaN(value)) {
-                return prev + curr
-              } else {
-                return prev
-              }
-            }, 0)
-            if (percent.includes(column.property)) {
-              sums[index] += ' %'
-            } else {
-              sums[index] += ' 元'
-            }
-          } else {
-            sums[index] = 'N/A'
-          }
-        })
-        return sums
-      }
+    changeMethod (value, index) {
+      console.log(value, index)
+      this.tableData6[index].name = value
+      console.log(this.tableData6)
     }
   }
+}
 </script>
 
 <style scoped>
